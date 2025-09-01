@@ -1,0 +1,29 @@
+# General
+- Use TypeScript everywhere.
+- Use clear, minimal, production-ready code.
+- Use proper file/folder structure automatically, don’t dump everything in one file.
+
+# Backend (Express + MongoDB)
+- Folder: backend/
+- Use Express with TypeScript.
+- Use Mongoose for MongoDB.
+- Create models: User, Form, Submission.
+- Use JWT for authentication.
+- Store Cloudinary file URLs, not raw files.
+- Create utils for db connection, gemini integration, cloudinary.
+
+# Frontend (Next.js 15 + TypeScript + Tailwind)
+- Folder: frontend/
+- Use App Router.
+- Pages: login, signup, dashboard, form/[id].
+- Components: FormRenderer, Navbar, FormCard.
+- Use react-hook-form for handling forms.
+- Axios for API calls, attach JWT in headers.
+
+# AI
+- Integrate Google Gemini API.
+- Always return a JSON schema for form fields.
+
+# Style/UI
+- Use TailwindCSS for styling.
+- Clean, modern UI with responsive design.
