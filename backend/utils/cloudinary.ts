@@ -7,16 +7,17 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-if (!cloudName || !apiKey || !apiSecret) {
-  throw new Error('Missing required Cloudinary environment variables');
-}
+// Check if Cloudinary is configured
+const isCloudinaryConfigured = cloudName && apiKey && apiSecret;
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-});
+if (isCloudinaryConfigured) {
+  // Configure Cloudinary only if all variables are present
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+  });
+}
 
 export interface UploadResult {
   secure_url: string;
@@ -24,6 +25,10 @@ export interface UploadResult {
 }
 
 export const uploadFile = async (fileBuffer: Buffer, folder: string = 'forms'): Promise<UploadResult> => {
+  if (!isCloudinaryConfigured) {
+    throw new Error('Cloudinary is not configured. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.');
+  }
+
   try {
     // Convert buffer to base64 string
     const base64File = fileBuffer.toString('base64');
@@ -46,6 +51,10 @@ export const uploadFile = async (fileBuffer: Buffer, folder: string = 'forms'): 
 };
 
 export const deleteFile = async (publicId: string): Promise<void> => {
+  if (!isCloudinaryConfigured) {
+    throw new Error('Cloudinary is not configured. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.');
+  }
+
   try {
     await cloudinary.uploader.destroy(publicId);
   } catch (error) {
