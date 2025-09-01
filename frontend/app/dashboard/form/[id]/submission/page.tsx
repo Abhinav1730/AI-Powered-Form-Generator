@@ -30,7 +30,7 @@ export default function SubmissionsPage() {
   const fetchSubmissions = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get(`/submissions/${formId}`);
+      const response = await api.get(`/submission/${formId}`);
       setSubmissions(response.data.submissions);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
