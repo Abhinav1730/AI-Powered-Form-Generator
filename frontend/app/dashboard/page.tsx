@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { Plus, Eye, FileText, Calendar, Sparkles } from 'lucide-react';
 import api from '@/app/utils/api';
 
 interface Form {
@@ -83,7 +84,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
@@ -95,33 +96,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-2 text-gray-600">Manage your AI-generated forms and view submissions</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-lg text-gray-600">Manage your AI-generated forms and view submissions</p>
+            </div>
+          </div>
         </div>
 
         {/* Create New Form Section */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Create New Form</h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+              <Plus className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Create New Form</h2>
+          </div>
           
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
               {error}
             </div>
           )}
           
           {success && (
-            <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm">
+            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
               {success}
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onCreateForm)} className="space-y-4">
+          <form onSubmit={handleSubmit(onCreateForm)} className="space-y-6">
             <div>
-              <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="prompt" className="block text-sm font-semibold text-gray-700 mb-3">
                 Describe the form you want to create
               </label>
               <textarea
@@ -134,66 +147,84 @@ export default function DashboardPage() {
                 })}
                 id="prompt"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none"
                 placeholder="e.g., Create a contact form with fields for name, email, phone number, and message"
               />
               {errors.prompt && (
-                <p className="mt-1 text-sm text-red-600">{errors.prompt.message}</p>
+                <p className="mt-2 text-sm text-red-600">{errors.prompt.message}</p>
               )}
             </div>
             
             <button
               type="submit"
               disabled={isCreating}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isCreating ? 'Creating...' : 'Create Form'}
+              <Plus className="w-5 h-5" />
+              <span>{isCreating ? 'Creating...' : 'Create Form'}</span>
             </button>
           </form>
         </div>
 
-        {/* Forms List */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Your Forms</h2>
+        {/* Forms Grid */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="px-8 py-6 border-b border-gray-100">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <FileText className="w-4 h-4 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Your Forms</h2>
+              <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
+                {forms.length}
+              </span>
+            </div>
           </div>
           
           {forms.length === 0 ? (
-            <div className="px-6 py-12 text-center">
-              <div className="text-gray-400 mb-4">
-                <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+            <div className="px-8 py-16 text-center">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FileText className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No forms yet</h3>
-              <p className="text-gray-600">Create your first form using the prompt above!</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No forms yet</h3>
+              <p className="text-gray-600 mb-6">Create your first form using the prompt above!</p>
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
-              {forms.map((form) => (
-                <div key={form.id} className="px-6 py-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-medium text-gray-900">{form.title}</h3>
-                      <p className="text-sm text-gray-500">Created {formatDate(form.createdAt)}</p>
+            <div className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {forms.map((form) => (
+                  <div key={form.id} className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-all duration-200 border border-gray-200 hover:border-gray-300 hover:shadow-md">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{form.title}</h3>
+                        <div className="flex items-center space-x-2 text-sm text-gray-500">
+                          <Calendar className="w-4 h-4" />
+                          <span>{formatDate(form.createdAt)}</span>
+                        </div>
+                      </div>
                     </div>
+                    
                     <div className="flex space-x-3">
                       <Link
                         href={`/dashboard/form/${form.id}`}
-                        className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="flex-1 inline-flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                       >
-                        View Form
+                        <Eye className="w-4 h-4" />
+                        <span>View Form</span>
                       </Link>
                       <Link
                         href={`/dashboard/form/${form.id}/submission`}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="flex-1 inline-flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transform hover:-translate-y-0.5 transition-all duration-200"
                       >
-                        View Submissions
+                        <FileText className="w-4 h-4" />
+                        <span>Submissions</span>
                       </Link>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
