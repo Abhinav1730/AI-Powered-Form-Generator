@@ -30,8 +30,15 @@ export default function DashboardPage() {
     formState: { errors },
   } = useForm<CreateFormData>();
 
-  // Fetch user's forms
+  // Check authentication and fetch user's forms
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // No token, redirect to login
+      window.location.href = '/login';
+      return;
+    }
+    
     fetchForms();
   }, []);
 
@@ -41,7 +48,15 @@ export default function DashboardPage() {
       const response = await api.get('/form');
       setForms(response.data.forms);
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
+      const error = err as { response?: { data?: { message?: string }, status?: number } };
+      
+      if (error.response?.status === 401) {
+        // Token is invalid, redirect to login
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+      
       setError(error.response?.data?.message || 'Failed to fetch forms');
     } finally {
       setIsLoading(false);

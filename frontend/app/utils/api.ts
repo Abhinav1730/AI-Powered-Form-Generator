@@ -27,11 +27,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid, redirect to login
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
+    // Don't automatically redirect on 401, let the component handle it
+    // This prevents the infinite redirect loop
     return Promise.reject(error);
   }
 );
