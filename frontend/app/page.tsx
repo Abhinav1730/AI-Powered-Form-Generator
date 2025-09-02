@@ -193,7 +193,7 @@ export default function HomePage() {
             The future of form creation is here. Powered by artificial intelligence.
           </p>
           <div className="flex items-center justify-center space-x-6 text-sm text-gray-400">
-            <span>© 2024 FormAI. All rights reserved.</span>
+            <span>© 2026 FormAI by Abhinav Saxena . All rights reserved.</span>
             <Link href="/privacy" className="hover:text-white transition-colors duration-200">
               Privacy Policy
             </Link>
