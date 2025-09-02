@@ -12,7 +12,7 @@ router.get('/test-gemini', testGeminiConnection);
 router.post('/generate', authenticateToken, generateForm);
 
 // Get a specific form by ID
-router.get('/:id', authenticateToken, getFormById);
+ router.get('/:id', getFormById);
 
 // Get all forms for the logged-in user
 router.get('/', authenticateToken, getUserForms);

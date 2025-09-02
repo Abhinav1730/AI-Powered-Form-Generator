@@ -33,7 +33,7 @@ interface FormData {
 export default function FormPage() {
   const params = useParams();
   const formId = params.id as string;
-  
+
   const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,9 +68,9 @@ export default function FormPage() {
 
   const handleFileChange = (fieldName: string, event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setFiles(prev => ({
+      setFiles((prev) => ({
         ...prev,
-        [fieldName]: Array.from(event.target.files!)
+        [fieldName]: Array.from(event.target.files!),
       }));
     }
   };
@@ -79,21 +79,24 @@ export default function FormPage() {
     try {
       setIsSubmitting(true);
       setError('');
-      
-      // Create FormData for file uploads
+
       const formData = new FormData();
-      
-      // Add form responses
-      Object.keys(data).forEach(key => {
+
+      // Collect responses into a single object
+      const responses: Record<string, string | number> = {};
+      Object.keys(data).forEach((key) => {
         if (data[key] !== undefined && data[key] !== '') {
-          formData.append(key, String(data[key]));
+          responses[key] = data[key] as string | number;
         }
       });
-      
-      // Add files
-      Object.keys(files).forEach(fieldName => {
+
+      // Append responses JSON
+      formData.append('responses', JSON.stringify(responses));
+
+      // Append files
+      Object.keys(files).forEach((fieldName) => {
         if (files[fieldName] && files[fieldName].length > 0) {
-          files[fieldName].forEach(file => {
+          files[fieldName].forEach((file) => {
             formData.append(fieldName, file);
           });
         }
@@ -105,13 +108,12 @@ export default function FormPage() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       // Show success and reset form
       setSuccess(true);
       reset();
       setFiles({});
-      
-      // Hide success message after 5 seconds
+
       setTimeout(() => setSuccess(false), 5000);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -133,21 +135,30 @@ export default function FormPage() {
           <input
             {...register(fieldName, {
               required: isRequired ? `${field.label} is required` : false,
-              minLength: validation.minLength ? {
-                value: validation.minLength,
-                message: `${field.label} must be at least ${validation.minLength} characters`
-              } : undefined,
-              maxLength: validation.maxLength ? {
-                value: validation.maxLength,
-                message: `${field.label} must be no more than ${validation.maxLength} characters`
-              } : undefined,
-              pattern: field.type === 'email' ? {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address'
-              } : validation.pattern ? {
-                value: new RegExp(validation.pattern),
-                message: `${field.label} format is invalid`
-              } : undefined,
+              minLength: validation.minLength
+                ? {
+                    value: validation.minLength,
+                    message: `${field.label} must be at least ${validation.minLength} characters`,
+                  }
+                : undefined,
+              maxLength: validation.maxLength
+                ? {
+                    value: validation.maxLength,
+                    message: `${field.label} must be no more than ${validation.maxLength} characters`,
+                  }
+                : undefined,
+              pattern:
+                field.type === 'email'
+                  ? {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Please enter a valid email address',
+                    }
+                  : validation.pattern
+                  ? {
+                      value: new RegExp(validation.pattern),
+                      message: `${field.label} format is invalid`,
+                    }
+                  : undefined,
             })}
             type={field.type}
             id={fieldName}
@@ -161,14 +172,18 @@ export default function FormPage() {
           <input
             {...register(fieldName, {
               required: isRequired ? `${field.label} is required` : false,
-              min: validation.min ? {
-                value: validation.min,
-                message: `${field.label} must be at least ${validation.min}`
-              } : undefined,
-              max: validation.max ? {
-                value: validation.max,
-                message: `${field.label} must be no more than ${validation.max}`
-              } : undefined,
+              min: validation.min
+                ? {
+                    value: validation.min,
+                    message: `${field.label} must be at least ${validation.min}`,
+                  }
+                : undefined,
+              max: validation.max
+                ? {
+                    value: validation.max,
+                    message: `${field.label} must be no more than ${validation.max}`,
+                  }
+                : undefined,
             })}
             type="number"
             id={fieldName}
@@ -191,7 +206,10 @@ export default function FormPage() {
             {files[fieldName] && files[fieldName].length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {files[fieldName].map((file, index) => (
-                  <div key={index} className="flex items-center space-x-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-sm">
+                  <div
+                    key={index}
+                    className="flex items-center space-x-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-sm"
+                  >
                     <FileText className="w-4 h-4" />
                     <span>{file.name}</span>
                   </div>
@@ -206,14 +224,18 @@ export default function FormPage() {
           <textarea
             {...register(fieldName, {
               required: isRequired ? `${field.label} is required` : false,
-              minLength: validation.minLength ? {
-                value: validation.minLength,
-                message: `${field.label} must be at least ${validation.minLength} characters`
-              } : undefined,
-              maxLength: validation.maxLength ? {
-                value: validation.maxLength,
-                message: `${field.label} must be no more than ${validation.maxLength} characters`
-              } : undefined,
+              minLength: validation.minLength
+                ? {
+                    value: validation.minLength,
+                    message: `${field.label} must be at least ${validation.minLength} characters`,
+                  }
+                : undefined,
+              maxLength: validation.maxLength
+                ? {
+                    value: validation.maxLength,
+                    message: `${field.label} must be no more than ${validation.maxLength} characters`,
+                  }
+                : undefined,
             })}
             id={fieldName}
             rows={4}
@@ -266,9 +288,7 @@ export default function FormPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-600">
-            Form not found
-          </div>
+          <div className="text-center text-gray-600">Form not found</div>
         </div>
       </div>
     );
@@ -280,9 +300,13 @@ export default function FormPage() {
         {/* Form Header */}
         <div className="text-center mb-8">
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">{formSchema.title}</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              {formSchema.title}
+            </h1>
             {formSchema.description && (
-              <p className="text-lg text-gray-600 leading-relaxed">{formSchema.description}</p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {formSchema.description}
+              </p>
             )}
           </div>
         </div>
@@ -293,7 +317,9 @@ export default function FormPage() {
             <div className="flex items-center justify-center space-x-3">
               <CheckCircle className="w-6 h-6" />
               <div>
-                <p className="font-semibold text-lg">Form submitted successfully!</p>
+                <p className="font-semibold text-lg">
+                  Form submitted successfully!
+                </p>
                 <p className="text-sm mt-1">Thank you for your submission.</p>
               </div>
             </div>
@@ -305,17 +331,22 @@ export default function FormPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {formSchema.fields.map((field) => (
               <div key={field.name} className="space-y-3">
-                <label htmlFor={field.name} className="block text-lg font-semibold text-gray-900">
+                <label
+                  htmlFor={field.name}
+                  className="block text-lg font-semibold text-gray-900"
+                >
                   {field.label}
-                  {field.required && <span className="text-red-500 ml-2">*</span>}
+                  {field.required && (
+                    <span className="text-red-500 ml-2">*</span>
+                  )}
                 </label>
-                
-                <div>
-                  {renderField(field)}
-                </div>
-                
+
+                <div>{renderField(field)}</div>
+
                 {errors[field.name] && (
-                  <p className="text-sm text-red-600 mt-2">{errors[field.name]?.message}</p>
+                  <p className="text-sm text-red-600 mt-2">
+                    {errors[field.name]?.message}
+                  </p>
                 )}
               </div>
             ))}

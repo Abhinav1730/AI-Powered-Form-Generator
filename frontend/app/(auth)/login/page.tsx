@@ -28,11 +28,9 @@ export default function LoginPage() {
       setIsLoading(true);
       setError('');
       
-      const response = await api.post('/auth/login', data);
-      const { token } = response.data;
-      
-      // Store JWT token
-      localStorage.setItem('token', token);
+     const response = await api.post('/auth/login', data);
+           const { token } = response.data;
+           localStorage.setItem('token', token);
       
       // Redirect to dashboard
       router.push('/dashboard');

@@ -47,11 +47,13 @@ export const getFormById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid form ID format' });
+    }
     const form = await Form.findById(id);
     if (!form) {
       return res.status(404).json({ message: 'Form not found' });
     }
-
     res.json({
       form: {
         id: form._id,

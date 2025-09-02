@@ -1,13 +1,15 @@
 import { Router } from 'express';
+import multer from 'multer';
 import { submitForm, getFormSubmissions } from '../controllers/submission.controller.js';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// Submit a form with responses and files
-router.post('/:formId', submitForm);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Get all submissions for a specific form
-router.get('/:formId', authenticateToken, getFormSubmissions);
+router.post('/:formId', upload.any(), submitForm as any);
+router.get('/:formId', authenticateToken, getFormSubmissions as any);
 
 export default router;
+

@@ -5,21 +5,21 @@ import { uploadFile } from '../utils/cloudinary.js';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string };
-  files?: Array<{
-    buffer: Buffer;
-    fieldname: string;
-    originalname: string;
-    mimetype: string;
-  }>;
+  files?: Express.Multer.File[];
 }
 
 export const submitForm = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { formId } = req.params;
-    const { responses } = req.body;
-    const files = req.files;
-    
-    if (!responses) {
+
+    // Handle responses safely (req.body is Record<string, any>)
+    const responses: Record<string, any> = req.body ?? {};
+    const files = req.files as Express.Multer.File[]?? [];
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
+
+
+    if (!responses || Object.keys(responses).length === 0) {
       return res.status(400).json({ message: 'Form responses are required' });
     }
 
@@ -29,10 +29,10 @@ export const submitForm = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    // Upload files to Cloudinary if any
+    // Upload files to Cloudinary
     const uploadedFileUrls: string[] = [];
-    if (files && files.length > 0) {
-      for (const file of files) {
+    for (const file of files) {
+      if (file.buffer) {
         const result = await uploadFile(file.buffer, 'form-submissions');
         uploadedFileUrls.push(result.secure_url);
       }
